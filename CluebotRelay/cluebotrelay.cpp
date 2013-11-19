@@ -49,9 +49,17 @@ void CluebotRelay::run()
 
     this->timer->start(200);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnTick()));
+
+    this->tm->Join("#en.wikipedia.huggle");
 }
 
 void CluebotRelay::OnTick()
 {
-
+    Huggle::IRC::Message *message;
+    message = this->cluenet->GetMessage();
+    while (message != NULL)
+    {
+        Debug(message->Text);
+        message = this->cluenet->GetMessage();
+    }
 }
