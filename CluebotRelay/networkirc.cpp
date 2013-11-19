@@ -336,6 +336,7 @@ void NetworkIrc_th::run()
         {
             QString data = buffer.at(0);
             buffer.removeAt(0);
+            std::cout << data.toStdString() << std::endl;
             this->Line(data);
         }
         ping++;

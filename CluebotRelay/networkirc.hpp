@@ -11,6 +11,7 @@
 #ifndef NETWORKIRC_H
 #define NETWORKIRC_H
 
+#include <iostream>
 #include <QString>
 #include <QtNetwork>
 #include <QThread>
