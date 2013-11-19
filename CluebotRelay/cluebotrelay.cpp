@@ -49,6 +49,7 @@ void CluebotRelay::run()
 
     this->timer->start(200);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnTick()));
+    this->cluenet->Join("#cluebotng-spam");
     this->cluenet->Join("#wikipedia-van");
     this->tm->Join("#en.wikipedia.huggle");
 }
