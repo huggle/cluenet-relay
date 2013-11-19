@@ -13,6 +13,7 @@
 
 #include <QCoreApplication>
 #include <iostream>
+#include <QTimer>
 #include <QObject>
 #include "networkirc.hpp"
 
@@ -24,10 +25,12 @@ public:
     ~CluebotRelay();
     Huggle::IRC::NetworkIrc *tm;
     Huggle::IRC::NetworkIrc *cluenet;
+    QTimer *timer;
     void Debug(QString text);
 
 public slots:
     void run();
+    void OnTick();
 
 
 signals:

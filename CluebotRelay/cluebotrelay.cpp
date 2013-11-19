@@ -13,14 +13,16 @@
 
 CluebotRelay::CluebotRelay(QObject *parent) : QObject(parent)
 {
-    this->tm = new Huggle::IRC::NetworkIrc("irc.tm-irc.org", "ClueBot");
+    this->tm = new Huggle::IRC::NetworkIrc("hub.tm-irc.org", "ClueBot");
     this->cluenet = new Huggle::IRC::NetworkIrc("irc.cluenet.org", "HuggleBot");
+    this->timer = new QTimer(this);
 }
 
 CluebotRelay::~CluebotRelay()
 {
     delete this->cluenet;
     delete this->tm;
+    delete this->timer;
 }
 
 void CluebotRelay::Debug(QString text)
@@ -44,4 +46,12 @@ void CluebotRelay::run()
         QCoreApplication::exit(6);
         return;
     }
+
+    this->timer->start(200);
+    connect(this->timer, SIGNAL(timeout()), this, SLOT(OnTick()));
+}
+
+void CluebotRelay::OnTick()
+{
+
 }
