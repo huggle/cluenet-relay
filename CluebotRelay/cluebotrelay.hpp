@@ -25,6 +25,7 @@ public:
     ~CluebotRelay();
     Huggle::IRC::NetworkIrc *tm;
     Huggle::IRC::NetworkIrc *cluenet;
+    bool Joined;
     QTimer *timer;
     void Debug(QString text);
 

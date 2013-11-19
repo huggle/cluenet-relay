@@ -16,6 +16,7 @@ CluebotRelay::CluebotRelay(QObject *parent) : QObject(parent)
     this->tm = new Huggle::IRC::NetworkIrc("hub.tm-irc.org", "ClueBot");
     this->cluenet = new Huggle::IRC::NetworkIrc("irc.cluenet.org", "HuggleBot");
     this->timer = new QTimer(this);
+    this->Joined = false;
 }
 
 CluebotRelay::~CluebotRelay()
@@ -49,13 +50,17 @@ void CluebotRelay::run()
 
     this->timer->start(200);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnTick()));
-    this->cluenet->Join("#cluebotng-spam");
-    this->cluenet->Join("#wikipedia-van");
     this->tm->Join("#en.wikipedia.huggle");
 }
 
 void CluebotRelay::OnTick()
 {
+    if (!Joined && this->cluenet->IsConnected())
+    {
+        this->cluenet->Join("#cluebotng-spam");
+        this->cluenet->Join("#wikipedia-van");
+        Joined = true;
+    }
     Huggle::IRC::Message *message;
     message = this->cluenet->GetMessage();
     while (message != NULL)
