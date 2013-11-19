@@ -66,6 +66,20 @@ void CluebotRelay::OnTick()
     while (message != NULL)
     {
         Debug(message->Text);
+        if (message->Text.endsWith("# Reverted"))
+        {
+            // get a diff id
+            if (message->Text.contains("?diff="))
+            {
+                QString diff = message->Text.mid(message->Text.indexOf("?diff=") + 6);
+                if (diff.contains("&"))
+                {
+                    diff = diff.mid(0, diff.indexOf("&"));
+                }
+                this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "ROLLBACK " + diff);
+            }
+        }
+        delete message;
         message = this->cluenet->GetMessage();
     }
 }
