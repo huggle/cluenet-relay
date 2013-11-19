@@ -65,7 +65,6 @@ void CluebotRelay::OnTick()
     message = this->cluenet->GetMessage();
     while (message != NULL)
     {
-        Debug(message->Text);
         if (message->Text.endsWith("# Reverted"))
         {
             // get a diff id
