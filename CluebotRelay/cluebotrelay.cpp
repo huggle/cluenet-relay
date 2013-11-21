@@ -13,7 +13,7 @@
 
 CluebotRelay::CluebotRelay(QObject *parent) : QObject(parent)
 {
-    this->tm = new Huggle::IRC::NetworkIrc("hub.tm-irc.org", "ClueBot");
+    this->tm = new Huggle::IRC::NetworkIrc("irc.tm-irc.org", "ClueBot");
     this->cluenet = new Huggle::IRC::NetworkIrc("irc.cluenet.org", "HuggleBot");
     this->timer = new QTimer(this);
     this->Joined = false;
