@@ -50,13 +50,13 @@ void CluebotRelay::run()
 
     this->timer->start(200);
     connect(this->timer, SIGNAL(timeout()), this, SLOT(OnTick()));
-    this->tm->Join("#en.wikipedia.huggle");
 }
 
 void CluebotRelay::OnTick()
 {
-    if (!Joined && this->cluenet->IsConnected())
+    if (!Joined && this->cluenet->IsConnected() && this->tm->IsConnected())
     {
+        this->tm->Join("#en.wikipedia.huggle");
         this->cluenet->Join("#cluebotng-spam");
         this->cluenet->Join("#wikipedia-van");
         Joined = true;
@@ -104,6 +104,7 @@ void CluebotRelay::OnTick()
                             this->Debug("Invalid score: " + score);
                         } else if (s > 0.1)
                         {
+                            s = s - 0.2;
                             int HuggleScore = (int)(s * 1000);
                             this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "SCORED " + diff + " " + QString::number(HuggleScore));
                         }
