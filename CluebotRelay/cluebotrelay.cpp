@@ -96,15 +96,17 @@ void CluebotRelay::OnTick()
                 {
                     score = score.mid(score.indexOf("#") + 1);
                     score = score.replace(" ", "");
-                    double s = score.toDouble();
-                    if (s == 0)
+                    if (score != "0" && score != "N/A")
                     {
-                        this->Debug("Invalid score: " + score);
-                    }
-                    if (s > 0.1)
-                    {
-                        int HuggleScore = ((int)s * 1000);
-                        this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "SCORED " + diff + " " + QString::number(HuggleScore));
+                        double s = score.toDouble();
+                        if (s == 0)
+                        {
+                            this->Debug("Invalid score: " + score);
+                        } else if (s > 0.1)
+                        {
+                            int HuggleScore = ((int)s * 1000);
+                            this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "SCORED " + diff + " " + QString::number(HuggleScore));
+                        }
                     }
                 }
             }
