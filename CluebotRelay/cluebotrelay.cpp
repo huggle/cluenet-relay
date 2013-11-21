@@ -104,7 +104,7 @@ void CluebotRelay::OnTick()
                             this->Debug("Invalid score: " + score);
                         } else if (s > 0.1)
                         {
-                            int HuggleScore = ((int)s * 1000);
+                            int HuggleScore = (int)(s * 1000);
                             this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "SCORED " + diff + " " + QString::number(HuggleScore));
                         }
                     }
