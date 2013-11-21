@@ -65,17 +65,48 @@ void CluebotRelay::OnTick()
     message = this->cluenet->GetMessage();
     while (message != NULL)
     {
-        if (message->Text.endsWith("# Reverted"))
+        // get a diff id
+        if (message->Text.contains("?diff="))
         {
-            // get a diff id
-            if (message->Text.contains("?diff="))
+            QString diff = message->Text.mid(message->Text.indexOf("?diff=") + 6);
+            if (diff.contains("&"))
             {
-                QString diff = message->Text.mid(message->Text.indexOf("?diff=") + 6);
-                if (diff.contains("&"))
-                {
-                    diff = diff.mid(0, diff.indexOf("&"));
-                }
+                diff = diff.mid(0, diff.indexOf("&"));
+            }
+            if (message->Text.endsWith("# Reverted"))
+            {
                 this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "ROLLBACK " + diff);
+            } else
+            {
+                QString score = message->Text;
+                int i = 2;
+                while (i > 0)
+                {
+                    if (score.contains("#"))
+                    {
+                        score = score.mid(0, score.lastIndexOf("#"));
+                        i--;
+                    } else
+                    {
+                        score = "";
+                        break;
+                    }
+                }
+                if (score.contains("#"))
+                {
+                    score = score.mid(score.indexOf("#") + 1);
+                    score = score.replace(" ", "");
+                    double s = score.toDouble();
+                    if (s == 0)
+                    {
+                        this->Debug("Invalid score: " + score);
+                    }
+                    if (s > 0.1)
+                    {
+                        int HuggleScore = ((int)s * 1000);
+                        this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "SCORED " + diff + " " + QString::number(HuggleScore));
+                    }
+                }
             }
         }
         delete message;

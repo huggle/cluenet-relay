@@ -344,7 +344,7 @@ void NetworkIrc_th::run()
             this->Line(data);
         }
         ping++;
-        if (ping > 200)
+        if (ping > 2000)
         {
             this->Data("PING :" + this->root->Server);
             ping = 0;
