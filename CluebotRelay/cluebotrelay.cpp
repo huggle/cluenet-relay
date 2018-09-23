@@ -14,7 +14,7 @@
 CluebotRelay::CluebotRelay(QObject *parent) : QObject(parent)
 {
     this->tm = new Huggle::IRC::NetworkIrc("irc.tm-irc.org", "ClueBot");
-    this->cluenet = new Huggle::IRC::NetworkIrc("irc.cluenet.org", "HuggleBot");
+    this->cluenet = new Huggle::IRC::NetworkIrc("chat.freenode.net", "HuggleBot");
     this->timer = new QTimer(this);
     this->Joined = false;
 }
@@ -57,8 +57,8 @@ void CluebotRelay::OnTick()
     if (!Joined && this->cluenet->IsConnected() && this->tm->IsConnected())
     {
         this->tm->Join("#en.wikipedia.huggle");
-        this->cluenet->Join("#cluebotng-spam");
-        this->cluenet->Join("#wikipedia-van");
+        //this->cluenet->Join("#cluebotng-spam");
+        this->cluenet->Join("#wikipedia-en-cbngfeed");
         Joined = true;
     }
     Huggle::IRC::Message *message;
@@ -79,6 +79,8 @@ void CluebotRelay::OnTick()
             } else
             {
                 QString score = message->Text;
+                // every score message is suffixed with # score # status # revert / not reverted
+                // so we need to get rid of last 2 hashes here
                 int i = 2;
                 while (i > 0)
                 {
@@ -94,21 +96,25 @@ void CluebotRelay::OnTick()
                 }
                 if (score.contains("#"))
                 {
-                    score = score.mid(score.indexOf("#") + 1);
+                    score = score.mid(score.lastIndexOf("#") + 1);
                     score = score.replace(" ", "");
                     if (score != "0" && score != "N/A")
                     {
                         double s = score.toDouble();
                         if (s == 0)
                         {
-                            this->Debug("Invalid score: " + score);
+                            this->Debug("Invalid score: " + score + " message was: " + message->Text);
                         } else if (s > 0.1)
                         {
                             s = s - 0.2;
                             int HuggleScore = (int)(s * 1000);
                             this->tm->Send("#en.wikipedia.huggle", QString(QChar(001)) + QString(QChar(001)) + "SCORED " + diff + " " + QString::number(HuggleScore));
+                            this->Debug("SCORED " + diff + " " + QString::number(HuggleScore));
                         }
                     }
+                } else
+                {
+                    this->Debug("Invalid message was: " + message->Text);
                 }
             }
         }
