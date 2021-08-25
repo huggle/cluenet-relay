@@ -14,7 +14,7 @@
 CluebotRelay::CluebotRelay(QObject *parent) : QObject(parent)
 {
     this->tm = new Huggle::IRC::NetworkIrc("irc.tm-irc.org", "ClueBot");
-    this->cluenet = new Huggle::IRC::NetworkIrc("chat.freenode.net", "HuggleBot");
+    this->cluenet = new Huggle::IRC::NetworkIrc("irc.libera.chat", "HuggleBot");
     this->timer = new QTimer(this);
     this->Joined = false;
 }
@@ -34,6 +34,7 @@ void CluebotRelay::Debug(QString text)
 
 void CluebotRelay::run()
 {
+    this->Debug("Connecting to tm-irc/huggle");
     if (!this->tm->Connect())
     {
         this->Debug("Unable to connect to tm-irc");
@@ -41,6 +42,7 @@ void CluebotRelay::run()
         return;
     }
 
+    this->Debug("Connecting to freenode/cb");
     if (!this->cluenet->Connect())
     {
         this->Debug("Unable to connect to cluenet");
@@ -56,6 +58,7 @@ void CluebotRelay::OnTick()
 {
     if (!Joined && this->cluenet->IsConnected() && this->tm->IsConnected())
     {
+        this->tm->Data("MODE ClueBot +B");
         this->tm->Join("#en.wikipedia.huggle");
         //this->cluenet->Join("#cluebotng-spam");
         this->cluenet->Join("#wikipedia-en-cbngfeed");
